@@ -115,3 +115,60 @@ const addRole = () => {
                 message: 'What is the department of the role you would like to add?',
                 choices: departmentObjects
             }
+        ]).then(answers => {
+            conn.query('INSERT INTO roles SET ?', { title: answers.title, salary: answers.salary, department_id: answers.department }, function (error, results, fields) {
+                if (error) throw error;
+                console.log('\nRole added!');
+                console.log('\n');
+
+                viewRoles();
+            });
+        });
+    });
+}
+
+const addEmployee = () => {
+    // get all roles from the roles table
+    conn.query('SELECT id, title FROM roles', function (error, results, fields) {
+        if (error) throw error;
+        // create an array of role titles
+        const roles = results.map(result => {
+            return result.title;
+        }).sort();
+        // create an array of role ids
+        const roleIds = results.map(result => {
+            return result.id;
+        }).sort();
+        // create an array of role objects to be used in the inquirer prompt
+        const roleObjects = results.map(result => {
+            return {
+                name: result.title,
+                value: result.id
+            }
+        }).sort();
+
+        // if roles are empty, tell user atleast one role must be added before adding an employee
+        if (roles.length === 0) {
+            console.log('\nYou must add at least one role before adding an employee.');
+            console.log('\n');
+            showMenu();
+            return;
+        }
+        // get all employees from the employees table
+        conn.query('SELECT id, first_name, last_name FROM employees', function (error, results, fields) {
+            if (error) throw error;
+            // create an array of employee names
+            const employees = results.map(result => {
+                return result.first_name + ' ' + result.last_name;
+            }).sort();
+            // create an array of employee ids
+            const employeeIds = results.map(result => {
+                return result.id;
+            }).sort();
+            // create an array of employee objects to be used in the inquirer prompt
+            const employeeObjects = results.map(result => {
+                return {
+                    name: result.first_name + ' ' + result.last_name,
+                    value: result.id
+                }
+            }).sort();
