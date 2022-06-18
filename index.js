@@ -57,3 +57,17 @@ const viewDepartments = () => {
             // prompt user to choose an action
             showMenu();
         }); 
+        
+        const viewEmployees = () => {
+            // join the employees table with the roles table to show the role title for each employee
+            // join the employees table with the employees table to show the manager name for each employee
+            conn.query('SELECT employees.id AS ID, employees.first_name AS FIRST_NAME, employees.last_name AS LAST_NAME, roles.title AS JOB_TITLE, departments.dpt_name AS DEPARTMENT, roles.salary AS SALARY, CONCAT(e.first_name, " ", e.last_name) AS MANAGER FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON departments.id = roles.department_id LEFT JOIN employees e ON employees.manager_id = e.id', function (error, results, fields) {
+                if (error) throw error;
+                console.log('\nShowing all employees:');
+                console.table(results);
+                console.log('\n');
+        
+                // prompt user to choose an action
+                showMenu();
+            });
+        }
