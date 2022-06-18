@@ -33,3 +33,27 @@ const viewDepartments = () => {
         });
     }
     
+    const viewRoles = () => {
+        // join the roles table with the departments table to show the department name for each role
+        conn.query('SELECT roles.id AS ID, roles.title AS TITLE, roles.salary AS SALARY, departments.dpt_name AS DEPARTMENT FROM roles LEFT JOIN departments ON roles.department_id = departments.id', function (error, results, fields) {
+            if (error) throw error;
+            console.log('\nShowing all roles:');
+            console.table(results);
+            console.log('\n');
+    
+            // prompt user to choose an action
+            showMenu();
+        });
+    }
+    
+    const viewRoles = () => {
+        // join the roles table with the departments table to show the department name for each role
+        conn.query('SELECT roles.id AS ID, roles.title AS TITLE, roles.salary AS SALARY, departments.dpt_name AS DEPARTMENT FROM roles LEFT JOIN departments ON roles.department_id = departments.id', function (error, results, fields) {
+            if (error) throw error;
+            console.log('\nShowing all roles:');
+            console.table(results);
+            console.log('\n');
+    
+            // prompt user to choose an action
+            showMenu();
+        }); 
