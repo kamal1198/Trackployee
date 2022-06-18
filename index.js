@@ -98,4 +98,20 @@ const addRole = () => {
             }
         }).sort();
 
-        
+        inquirer.prompt([
+            {
+                type: 'input',
+                name: 'title',
+                message: 'What is the title of the role you would like to add?'
+            },
+            {
+                type: 'number',
+                name: 'salary',
+                message: 'What is the salary of the role you would like to add?'
+            },
+            {
+                type: 'list',
+                name: 'department',
+                message: 'What is the department of the role you would like to add?',
+                choices: departmentObjects
+            }
