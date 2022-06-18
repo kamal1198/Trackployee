@@ -27,3 +27,9 @@ const viewDepartments = () => {
         console.log('\nShowing all departments:');
         console.table(results);
         console.log('\n');
+
+         // prompt user to choose an action
+         showMenu();
+        });
+    }
+    
