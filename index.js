@@ -154,6 +154,7 @@ const addEmployee = () => {
             showMenu();
             return;
         }
+
         // get all employees from the employees table
         conn.query('SELECT id, first_name, last_name FROM employees', function (error, results, fields) {
             if (error) throw error;
@@ -173,180 +174,180 @@ const addEmployee = () => {
                 }
             }).sort();
 
-           // include None as an option for the manager
-           employeeObjects.unshift({
-            name: 'None',
-            value: null
-        });
+            // include None as an option for the manager
+            employeeObjects.unshift({
+                name: 'None',
+                value: null
+            });
 
-        inquirer.prompt([
-            {
-                type: 'input',
-                name: 'firstName',
-                message: 'What is the first name of the employee you would like to add?'
-            },
-            {
-                type: 'input',
-                name: 'lastName',
-                message: 'What is the last name of the employee you would like to add?'
-            },
-            {
-                type: 'list',
-                name: 'role',
-                message: 'What is the role of the employee you would like to add?',
-                choices: roleObjects
-            },
-            {
-                type: 'list',
-                name: 'manager',
-                message: 'Who is the manager of the employee you would like to add?',
-                choices: employeeObjects
-            }
-        ]).then(answers => {
-            conn.query('INSERT INTO employees SET ?', { first_name: answers.firstName, last_name: answers.lastName, role_id: answers.role, manager_id: answers.manager }, function (error, results, fields) {
-                if (error) throw error;
-                console.log('\nEmployee added!');
-                console.log('\n');
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'firstName',
+                    message: 'What is the first name of the employee you would like to add?'
+                },
+                {
+                    type: 'input',
+                    name: 'lastName',
+                    message: 'What is the last name of the employee you would like to add?'
+                },
+                {
+                    type: 'list',
+                    name: 'role',
+                    message: 'What is the role of the employee you would like to add?',
+                    choices: roleObjects
+                },
+                {
+                    type: 'list',
+                    name: 'manager',
+                    message: 'Who is the manager of the employee you would like to add?',
+                    choices: employeeObjects
+                }
+            ]).then(answers => {
+                conn.query('INSERT INTO employees SET ?', { first_name: answers.firstName, last_name: answers.lastName, role_id: answers.role, manager_id: answers.manager }, function (error, results, fields) {
+                    if (error) throw error;
+                    console.log('\nEmployee added!');
+                    console.log('\n');
 
-                viewEmployees();
+                    viewEmployees();
+                });
             });
         });
     });
-});
 }
 
 
 const updateEmployeeRole = () => {
-// get all employees from the employees table
-conn.query('SELECT id, first_name, last_name FROM employees', function (error, results, fields) {
-    if (error) throw error;
-    // create an array of employee names
-    const employees = results.map(result => {
-        return result.first_name + ' ' + result.last_name;
-    }).sort();
-    // create an array of employee ids
-    const employeeIds = results.map(result => {
-        return result.id;
-    }).sort();
-    // create an array of employee objects to be used in the inquirer prompt
-    const employeeObjects = results.map(result => {
-        return {
-            name: result.first_name + ' ' + result.last_name,
-            value: result.id
-        }
-    }).sort();
-
-    // get all roles from the roles table
-    conn.query('SELECT id, title FROM roles', function (error, results, fields) {
+    // get all employees from the employees table
+    conn.query('SELECT id, first_name, last_name FROM employees', function (error, results, fields) {
         if (error) throw error;
-        // create an array of role titles
-        const roles = results.map(result => {
-            return result.title;
+        // create an array of employee names
+        const employees = results.map(result => {
+            return result.first_name + ' ' + result.last_name;
         }).sort();
-        // create an array of role ids
-        const roleIds = results.map(result => {
+        // create an array of employee ids
+        const employeeIds = results.map(result => {
             return result.id;
         }).sort();
-        // create an array of role objects to be used in the inquirer prompt
-        const roleObjects = results.map(result => {
+        // create an array of employee objects to be used in the inquirer prompt
+        const employeeObjects = results.map(result => {
             return {
-                name: result.title,
+                name: result.first_name + ' ' + result.last_name,
                 value: result.id
             }
         }).sort();
 
-        // if roles are empty, tell user atleast one role must be added before adding an employee
-        if (roles.length === 0) {
-            console.log('\nYou must add at least one role before adding an employee.');
-            console.log('\n');
-            showMenu();
-            return;
-        }
+        // get all roles from the roles table
+        conn.query('SELECT id, title FROM roles', function (error, results, fields) {
+            if (error) throw error;
+            // create an array of role titles
+            const roles = results.map(result => {
+                return result.title;
+            }).sort();
+            // create an array of role ids
+            const roleIds = results.map(result => {
+                return result.id;
+            }).sort();
+            // create an array of role objects to be used in the inquirer prompt
+            const roleObjects = results.map(result => {
+                return {
+                    name: result.title,
+                    value: result.id
+                }
+            }).sort();
 
-        inquirer.prompt([
-            {
-                type: 'list',
-                name: 'employee',
-                message: 'Which employee would you like to update?',
-                choices: employeeObjects
-            },
-            {
-                type: 'list',
-                name: 'role',
-                message: 'What is the role of the employee you would like to update?',
-                choices: roleObjects
-            }
-        ]).then(answers => {
-            conn.query('UPDATE employees SET ? WHERE ?', [{ role_id: answers.role }, { id: answers.employee }], function (error, results, fields) {
-                if (error) throw error;
-                console.log('\nEmployee role updated!');
+            // if roles are empty, tell user atleast one role must be added before adding an employee
+            if (roles.length === 0) {
+                console.log('\nYou must add at least one role before adding an employee.');
                 console.log('\n');
-                
-                viewEmployees();
+                showMenu();
+                return;
+            }
+
+            inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'employee',
+                    message: 'Which employee would you like to update?',
+                    choices: employeeObjects
+                },
+                {
+                    type: 'list',
+                    name: 'role',
+                    message: 'What is the role of the employee you would like to update?',
+                    choices: roleObjects
+                }
+            ]).then(answers => {
+                conn.query('UPDATE employees SET ? WHERE ?', [{ role_id: answers.role }, { id: answers.employee }], function (error, results, fields) {
+                    if (error) throw error;
+                    console.log('\nEmployee role updated!');
+                    console.log('\n');
+                    
+                    viewEmployees();
+                });
             });
         });
     });
-});
 }
 
 const showMenu = async () => {
 
-let action = await inquirer.prompt([
-    {
-        type: 'list',
-        name: 'menu',
-        message: 'Select an action:',
-        choices: [
-            'View all departments',
-            'View all roles',
-            'View all employees',
-            'Add a department',
-            'Add a role',
-            'Add an employee',
-            'Update an employee role',
-            'Exit'
-        ],
-        default: 'View all departments'
-    }
-]);
+    let action = await inquirer.prompt([
+        {
+            type: 'list',
+            name: 'menu',
+            message: 'Select an action:',
+            choices: [
+                'View all departments',
+                'View all roles',
+                'View all employees',
+                'Add a department',
+                'Add a role',
+                'Add an employee',
+                'Update an employee role',
+                'Exit'
+            ],
+            default: 'View all departments'
+        }
+    ]);
 
-// use select
+    // use select
 
-switch (action.menu) {
-    case 'View all departments': {
-        viewDepartments();
-        break;
+    switch (action.menu) {
+        case 'View all departments': {
+            viewDepartments();
+            break;
+        }
+        case 'View all roles': {
+            viewRoles();
+            break;
+        }
+        case 'View all employees': {
+            viewEmployees();
+            break;
+        }
+        case 'Add a department': {
+            addDepartment();
+            break;
+        }
+        case 'Add a role': {
+            addRole();
+            break;
+        }
+        case 'Add an employee': {
+            addEmployee();
+            break;
+        }
+        case 'Update an employee role': {
+            updateEmployeeRole();
+            break;
+        }
+        case 'Exit': {
+            console.log('\nGoodbye!');
+            conn.end();
+            process.exit();
+        }
     }
-    case 'View all roles': {
-        viewRoles();
-        break;
-    }
-    case 'View all employees': {
-        viewEmployees();
-        break;
-    }
-    case 'Add a department': {
-        addDepartment();
-        break;
-    }
-    case 'Add a role': {
-        addRole();
-        break;
-    }
-    case 'Add an employee': {
-        addEmployee();
-        break;
-    }
-    case 'Update an employee role': {
-        updateEmployeeRole();
-        break;
-    }
-    case 'Exit': {
-        console.log('\nGoodbye!');
-        conn.end();
-        process.exit();
-    }
-}
 }
 
 showMenu().then(() => {});
