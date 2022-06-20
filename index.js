@@ -7,8 +7,8 @@ require('console.table')
 var conn = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'kamal1998',
-    database: 'roles'
+    password: 'password',
+    database: 'employees'
 });
 
 conn.connect(function (err) {
