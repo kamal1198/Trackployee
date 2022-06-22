@@ -1,5 +1,7 @@
+const path = require('path');
 var mysql = require('mysql');
 const inquirer = require('inquirer');
+const express = require('express');
 
 // for displaying cleaner tables
 require('console.table')
